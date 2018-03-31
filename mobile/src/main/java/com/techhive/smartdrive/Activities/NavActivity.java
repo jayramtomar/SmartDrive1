@@ -14,6 +14,7 @@ import android.location.LocationManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
@@ -50,7 +51,10 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 import com.techhive.smartdrive.Problems.ReportProblemActivity;
@@ -61,10 +65,14 @@ import com.techhive.smartdrive.Speed.GpsServices;
 import com.techhive.smartdrive.Utilities.DirectionsJSONParser;
 import com.techhive.smartdrive.Trackers.FileDownTryActivity;
 import com.techhive.smartdrive.Utilities.SharedPrefManager;
+import com.techhive.smartdrive.model.HeatMap;
 
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -74,6 +82,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.StringTokenizer;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -106,7 +115,6 @@ public class NavActivity extends AppCompatActivity implements LocationListener, 
     ArrayList<LatLng> markerPoints = new ArrayList<>();
     static final int REQ_CODE = 123;
     Intent directionIntent;
-
 
     // boolean flag to toggle periodic location updates
     private boolean mRequestingLocationUpdates = false;
@@ -142,7 +150,7 @@ public class NavActivity extends AppCompatActivity implements LocationListener, 
             }
         };
 
-        mLocationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+
 
     }
 
@@ -172,7 +180,6 @@ public class NavActivity extends AppCompatActivity implements LocationListener, 
         }
     }
 */
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
